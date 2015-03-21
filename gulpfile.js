@@ -13,6 +13,11 @@ var plumber = require('gulp-plumber');
 var minifycss = require('gulp-minify-css');
 var browserSync = require('browser-sync');
 var protractor = require('gulp-protractor').protractor;
+var path = require('path');
+var childProcess = require('child_process');
+var express = require('express');
+var app = express();
+var testServer;
 
 var JS_SOURCE = 'js/**/*.js';
 var jsFiles = ['gulpfile.js', JS_SOURCE];
@@ -61,6 +66,13 @@ gulp.task('compass', function() {
 
 // Test
 // ----
+function getProtractorBinary(binaryName) {
+  var winExt = /^win/.test(process.platform) ? '.cmd' : '';
+  var pkgPath = require.resolve('protractor');
+  var dirname = path.dirname(pkgPath);
+  var protractorDir = path.resolve(path.join(dirname, '..', 'bin'));
+  return path.join(protractorDir, '/' + binaryName + winExt);
+}
 
 gulp.task('jscs', function() {
   return gulp.src(jsFiles)
@@ -74,18 +86,48 @@ gulp.task('jshint', function() {
     .pipe(jshint.reporter('fail'));
 });
 
+// Protractor setup
+gulp.task('protractor-install', function(done) {
+    childProcess.spawn(getProtractorBinary('webdriver-manager'), ['update'], {
+        stdio: 'inherit'
+    }).once('close', done);
+});
+
+gulp.task('webdriver-start', function() {
+  childProcess.spawn(getProtractorBinary('webdriver-manager'), ['start'], {
+    stdio: 'inherit'
+  });
+});
+
+gulp.task('test-server', function() {
+  app.use(express.static(__dirname + '/src'));
+
+  app.get('*', function(req, res) {
+    res.sendfile('./src/index.html');
+  });
+
+  testServer = app.listen(8080);
+});
+
 // Setting up the test task
 gulp.task('protractor', function() {
   return gulp.src(['./tests/e2e/*.spec.js'])
    .pipe(protractor({
-       configFile: 'protractor.config.js'
+       configFile: 'tests/protractor.config.js'
    }))
    .on('error', function(e) {
      throw e;
-   });
+   })
+   .on('end', function() {
+      if (testServer) {
+        testServer.close();
+      }
+   })
 });
 
-gulp.task('test', gulpsync.sync(['jshint', 'jscs', 'protractor']));
+gulp.task('test', gulpsync.sync(
+  ['jshint', 'jscs', 'test-server', 'protractor']
+));
 
 // JSDOC
 // ----

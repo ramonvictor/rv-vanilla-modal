@@ -3,7 +3,7 @@ var visibleClass = 'rv-vanilla-modal-is-open';
 describe('rv-vanilla-modal:open', function() {
 
 	beforeEach(function(){
-		browser.get('http://localhost:3000');
+		browser.get('http://localhost:8080');
 	});
 
 	it('should show modal', function() {
