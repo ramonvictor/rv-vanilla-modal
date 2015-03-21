@@ -12,6 +12,7 @@ var autoprefixer = require('gulp-autoprefixer');
 var plumber = require('gulp-plumber');
 var minifycss = require('gulp-minify-css');
 var browserSync = require('browser-sync');
+var protractor = require('gulp-protractor').protractor;
 
 var JS_SOURCE = 'js/**/*.js';
 var jsFiles = ['gulpfile.js', JS_SOURCE];
@@ -73,7 +74,18 @@ gulp.task('jshint', function() {
     .pipe(jshint.reporter('fail'));
 });
 
-gulp.task('test', gulpsync.sync(['jshint', 'jscs']));
+// Setting up the test task
+gulp.task('protractor', function() {
+  return gulp.src(['./tests/e2e/*.spec.js'])
+   .pipe(protractor({
+       configFile: 'protractor.config.js'
+   }))
+   .on('error', function(e) {
+     throw e;
+   });
+});
+
+gulp.task('test', gulpsync.sync(['jshint', 'jscs', 'protractor']));
 
 // JSDOC
 // ----
