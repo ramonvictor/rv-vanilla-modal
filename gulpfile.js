@@ -6,7 +6,7 @@ var gulp = require('gulp');
 var gulpsync = require('gulp-sync')(gulp);
 var jshint = require('gulp-jshint');
 var jscs = require('gulp-jscs');
-var docco = require('gulp-docco');
+var jsdoc = require('gulp-jsdoc');
 var compass = require('gulp-compass');
 var autoprefixer = require('gulp-autoprefixer');
 var plumber = require('gulp-plumber');
@@ -19,7 +19,7 @@ var express = require('express');
 var app = express();
 var testServer;
 
-var JS_SOURCE = 'js/**/*.js';
+var JS_SOURCE = 'src/js/**/*.js';
 var jsFiles = ['gulpfile.js', JS_SOURCE];
 var target = {
   sassSrc: 'src/css/sass/**/*.scss',
@@ -66,14 +66,6 @@ gulp.task('compass', function() {
 
 // Test
 // ----
-function getProtractorBinary(binaryName) {
-  var winExt = /^win/.test(process.platform) ? '.cmd' : '';
-  var pkgPath = require.resolve('protractor');
-  var dirname = path.dirname(pkgPath);
-  var protractorDir = path.resolve(path.join(dirname, '..', 'bin'));
-  return path.join(protractorDir, '/' + binaryName + winExt);
-}
-
 gulp.task('jscs', function() {
   return gulp.src(jsFiles)
     .pipe(jscs());
@@ -87,6 +79,14 @@ gulp.task('jshint', function() {
 });
 
 // Protractor setup
+function getProtractorBinary(binaryName) {
+  var winExt = /^win/.test(process.platform) ? '.cmd' : '';
+  var pkgPath = require.resolve('protractor');
+  var dirname = path.dirname(pkgPath);
+  var protractorDir = path.resolve(path.join(dirname, '..', 'bin'));
+  return path.join(protractorDir, '/' + binaryName + winExt);
+}
+
 gulp.task('protractor-install', function(done) {
     childProcess.spawn(getProtractorBinary('webdriver-manager'), ['update'], {
         stdio: 'inherit'
@@ -100,16 +100,16 @@ gulp.task('webdriver-start', function() {
 });
 
 gulp.task('test-server', function() {
-  app.use(express.static(__dirname + '/src'));
+  var serverRoot = __dirname + '/src';
+  app.use(express.static(serverRoot));
 
   app.get('*', function(req, res) {
-    res.sendfile('./src/index.html');
+    res.sendFile(serverRoot);
   });
 
   testServer = app.listen(8080);
 });
 
-// Setting up the test task
 gulp.task('protractor', function() {
   return gulp.src(['./tests/e2e/*.spec.js'])
    .pipe(protractor({
@@ -131,10 +131,21 @@ gulp.task('test', gulpsync.sync(
 
 // JSDOC
 // ----
+var jsdocTmpl = {
+  path: 'ink-docstrap',
+  systemName: 'rv-vanilla-modal',
+  footer: 'Generated with gulp',
+  copyright: 'Copyright WebItUp 2014',
+  navType: 'vertical',
+  theme: 'flatly',
+  linenums: true,
+  collapseSymbols: false,
+  inverseNav: false
+};
+
 gulp.task('docs', function() {
   gulp.src(JS_SOURCE)
-    .pipe(docco())
-    .pipe(gulp.dest('./docs'));
+    .pipe(jsdoc('./docs', jsdocTmpl));
 });
 
 gulp.task('watch', function() {

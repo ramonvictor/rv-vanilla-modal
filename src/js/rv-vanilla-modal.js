@@ -1,21 +1,27 @@
-// RvVanillaModal
-// ----------------
+/* exported RvVanillaModal */
+/**
+ * RvVanillaModal.
+ * @namespace
+ */
 var RvVanillaModal = (function(window, undefined) {
 	'use strict';
-
-	// @module: RvVanillaModal
-	// @class: receives `options` object.
-	// @returns: {Object} `this` and its public methods
+	/**
+	 * Modal constructor.
+	 * @constructor
+	 * @param {Object} options
+	 * @returns: {Object} this with public methods
+	 */
 	function RvVanillaModal(options) {
 		this.init(options);
 
 		return this;
 	}
 
-	// @public: inits application
-	// @param: {Object} `options`
+	/**
+	 * @public: inits application.
+	 * @param: {Object} options
+	 */
 	RvVanillaModal.prototype.init = function(options) {
-		// {Object} `defaults` definition
 		var defaults = {
 			selector: '[data-rv-vanilla-modal]',
 			modalSelector: '.rv-vanilla-modal',
@@ -25,26 +31,40 @@ var RvVanillaModal = (function(window, undefined) {
 		};
 		var self = this;
 
-		// {Object} `settings` - stores global options
+		/**
+		 * {Object} settings - stores global options
+		 */
 		this.settings = extend(defaults, options);
 
-		// {Array} of modal wrapper elements
+		/**
+		 * {Array} of modal wrapper elements
+		 */
 		this.modalElements = docQSA(this.settings.modalSelector);
 
-		// {Array} of modal trigger elements
+		/**
+		 * {Array} of modal trigger elements
+		 */
 		this.triggers = docQSA(this.settings.selector);
 
-		// Checks overlay option
+		/**
+		 * Checks if overlay option is enabled.
+		 */
 		if (this.settings.showOverlay) {
 			setupOverlay(function() {
-				// {Object} modal overlay element
+				/**
+				 * {Object} modal overlay element
+				 */
 				self.overlayElement = docQS('.rv-vanilla-modal-overlay');
 			});
 		}
 	};
 
-	// @public: closes modal
-	// @param: {Object} `targetElement`
+	/**
+	 * Closes modal.
+	 *
+	 * @public: closes modal
+	 * @param: {Object} targetElement
+	 */
 	RvVanillaModal.prototype.close = function(targetElement) {
 		targetElement.classList.remove(this.settings.showModalClassName);
 
@@ -53,8 +73,10 @@ var RvVanillaModal = (function(window, undefined) {
 		}
 	};
 
-	// @public: opens modal
-	// @param: {Object} `targetElement`
+	/**
+	 * @public: opens modal
+	 * @param: {Object} targetElement
+	 */
 	RvVanillaModal.prototype.open = function(targetElement) {
 		this.closeShownModal();
 
@@ -65,8 +87,10 @@ var RvVanillaModal = (function(window, undefined) {
 		}
 	};
 
-	// @public: loops through list of triggers and fires a callback
-	// @returns: `callback`
+	/**
+	 * @public: loops through list of triggers and fires a callback
+	 * @returns: callback
+	 */
 	RvVanillaModal.prototype.each = function(callback) {
 		var array = [];
 		array.forEach.call(this.triggers, function(element) {
@@ -76,7 +100,9 @@ var RvVanillaModal = (function(window, undefined) {
 		});
 	}
 
-	// @public: closes modal if any is shown
+	/**
+	 * @public: closes modal if any is shown
+	 */
 	RvVanillaModal.prototype.closeShownModal = function() {
 		var array = [];
 		var showModalClassName = this.settings.showModalClassName;
@@ -88,23 +114,29 @@ var RvVanillaModal = (function(window, undefined) {
 		});
 	}
 
-	// @private: short version of querySelectorAll
-	// @param: {string} `selector` - css-like
-	// @returns: {Array|NodeList} selector list
+	/**
+	 * @private: short version of querySelectorAll
+	 * @param: {string} selector - css-like
+	 * @returns: {Array|NodeList} selector list
+	 */
 	function docQSA(selector) {
 		return document.querySelectorAll(selector);
 	}
 
-	// @private: short version of querySelector
-	// @param: css-like `selector`
-	// @returns: {Object} first DOM selector
+	/**
+	 * @private: short version of querySelector
+	 * @param: css-like selector
+	 * @returns: {Object} first DOM selector
+	 */
 	function docQS(selector) {
 		return document.querySelector(selector);
 	}
 
-	// @private: merge defaults with user options
-	// @param: `defaults` settings and user `options`
-	// @returns: merged values of `defaults` and `options`
+	/**
+	 * @private: merge defaults with user options
+	 * @param: defaults settings and user options
+	 * @returns: merged values of defaults and options
+	 */
 	function extend(defaults, options) {
 		var extended = {};
 		var prop;
@@ -121,9 +153,11 @@ var RvVanillaModal = (function(window, undefined) {
 		return extended;
 	}
 
-	// @private: creates overlay element
-	// @param: `callback` - on finish
-	// @returns: `callback`
+	/**
+	 * @private: creates overlay element
+	 * @param: callback - on finish
+	 * @returns: callback
+	 */
 	function setupOverlay(callback) {
 		var div = document.createElement('div');
 		div.classList.add('rv-vanilla-modal-overlay');
