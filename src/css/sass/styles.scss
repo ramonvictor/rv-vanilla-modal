@@ -1,0 +1,125 @@
+/* CSS RESET */
+* {
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+label {
+    display: inline-block;
+    max-width: 100%;
+    margin-bottom: 5px;
+    font-weight: 600;
+}
+
+article,
+aside,
+details,
+figcaption,
+figure,
+footer,
+header,
+hgroup,
+main,
+menu,
+nav,
+section,
+summary {
+    display: block;
+}
+
+a {
+    text-decoration: none;
+    color: #B9ACCB;
+}
+
+a:hover {
+    color: #6B3398;
+}
+
+ul, li {
+    margin: 0;
+    padding: 0;
+}
+
+li {
+    list-style: none;
+}
+
+
+/* APP STYLES */
+
+body {
+  font-family: 'Raleway', Helvetica, sans-serif;
+}
+
+h1, h2, h3{
+    color: #02214C;
+}
+
+h1 {
+    font-weight: 500;
+    font-size: 40px;
+    margin-bottom: 0.2em;
+}
+
+h2 {
+    font-weight: 300;
+}
+
+#main {
+    width: 1000px;
+    margin: 0 auto;
+}
+
+.main-header {
+    text-align: center;
+    padding: 40px 0;
+    margin-bottom: 20px;
+    border-bottom: 1px solid #e1e1e1;
+}
+
+.button {
+    color: #3CB3E7;
+    font-family: 'Raleway', Helvetica, sans-serif;
+    border-radius: 4px;
+    padding: 15px 25px;
+    border: 1px solid #3CB3E7;
+    background: transparent;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+.button:hover{
+    color: #fff;
+    background: #3CB3E7;
+}
+
+.center-button-wrapper{
+    text-align: center;
+    padding: 50px 0;
+}
+
+@import 'rv-vanilla-modal';
+
+
+/* HELPER CLASSES */
+.hidden {
+    display: none !important;
+    visibility: hidden;
+}
+
+.group:before,
+.group:after {
+    content: "";
+    display: table;
+}
+
+.group:after {
+    clear: both;
+}
+
+.centered {
+    text-align: center;
+}
