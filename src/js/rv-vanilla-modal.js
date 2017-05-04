@@ -71,6 +71,9 @@ var RvVanillaModal = (function(window, undefined) {
 		if (this.settings.showOverlay) {
 			this.overlayElement.classList.remove('is-shown');
 		}
+
+		dispatch('rv-modal/close', { id: targetElement.id });
+		dispatch('rv-modal/close/' + targetElement.id);
 	};
 
 	/**
@@ -85,6 +88,9 @@ var RvVanillaModal = (function(window, undefined) {
 		if (this.settings.showOverlay) {
 			this.overlayElement.classList.add('is-shown');
 		}
+
+		dispatch('rv-modal/open', { id: targetElement.id });
+		dispatch('rv-modal/open/' + targetElement.id);
 	};
 
 	/**
@@ -112,6 +118,24 @@ var RvVanillaModal = (function(window, undefined) {
 				return;
 			}
 		});
+	}
+
+	/**
+	 * @public: register event listeners
+	 * @param: {Object} targetElement
+	 */
+	RvVanillaModal.prototype.on = function() {
+		window.addEventListener.apply(window, arguments);
+	};
+
+	/**
+	 * @private: dispatch custom events
+	 * @param: {string} eventName
+	 * @returns: {Object} payload - data to be sent in the event object.
+	 */
+	function dispatch(eventName, payload) {
+		var event = new CustomEvent(eventName, { detail: payload || {} });
+		window.dispatchEvent(event);
 	}
 
 	/**

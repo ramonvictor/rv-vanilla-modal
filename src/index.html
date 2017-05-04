@@ -55,6 +55,26 @@ document.addEventListener('DOMContentLoaded', function() {
         modal.open(targetElement);
        });
     });
+
+    // Instance specific events
+    modal.on('rv-modal/open/about-modal', function(event) {
+      console.log('about opened');
+    });
+
+    modal.on('rv-modal/close/about-modal', function(event) {
+      console.log('about closed');
+    });
+
+    // Gloval events
+    modal.on('rv-modal/open', function(event) {
+      var payload = event.detail;
+      console.log('some modal is open: ', payload);
+    });
+
+    modal.on('rv-modal/close', function(event) {
+      var payload = event.detail;
+      console.log('some modal is closed: ', payload);
+    });
 }, false);
 </script>
 </html>
